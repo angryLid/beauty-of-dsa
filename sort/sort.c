@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "sort.h"
-
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 void bubble_sort(int *nums, int numsSize)
 
 {
@@ -51,9 +51,9 @@ void selection_sort(int *nums, int numsSize)
     if (numsSize <= 1)
         return;
 
-    int minAt = 0;
-    for (int i = 0; i < numsSize; i++)
+       for (int i = 0; i < numsSize; i++)
     {
+        int minAt = i;
         for (int j = i; j < numsSize; j++)
             if (nums[j] < nums[minAt])
                 minAt = j;
@@ -64,15 +64,9 @@ void selection_sort(int *nums, int numsSize)
     }
 }
 
-void merge_sort(int *nums, int numsSize)
-{
-    int tmp[numsSize];
-    m_sort(nums, tmp, 0, numsSize - 1);
-    free(tmp);
-}
 void mergeSort(int *nums, int numsSize)
 {
-    int tmp[numsSize];
+    int *tmp = (int *)malloc(sizeof(int) * numsSize);
     int length = 1;
     while (length < numsSize)
     {
@@ -82,18 +76,28 @@ void mergeSort(int *nums, int numsSize)
         // length *= 2;
     }
     free(tmp);
+    tmp = NULL;
 }
-void mSort(int *nums, int *tmp, int numsSize, int length)
+
+void mSort(int *nums, int *tmp, int size, int len)
 {
-    int i, j;
-    for (i = 0; i <= numsSize - 2 * length; i += 2 * length)
-        merge(nums, tmp, i, i + length, i + 2 * length - 1);
-    if (i + length < numsSize)
-        merge(nums, tmp, i, i + length, numsSize - 1);
-    // else
-    //     for (j = i; j < numsSize; j++)
-    //         tmp[j] = nums[j];
+    int i;
+    for (i = 0; i < size - 2 * len - 1; i += 2 * len)
+    {
+        merge(nums, tmp, i, i + len - 1, i + 2 * len - 1);
+    }
+    if (i < size - len + 1)
+        merge(nums, tmp, i, i + len - 1, size - 1);
 }
+
+void merge_sort(int *nums, int numsSize)
+{
+    int *tmp = (int *)malloc(sizeof(int) * numsSize);
+    m_sort(nums, tmp, 0, numsSize - 1);
+    free(tmp);
+    tmp = NULL;
+}
+
 void m_sort(int *nums, int *tmp, int left, int right)
 {
     if (left < right)
